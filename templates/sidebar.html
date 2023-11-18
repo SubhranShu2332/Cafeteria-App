@@ -1,0 +1,40 @@
+
+<div class="btn d-block d-md-none rounded-0" onclick="toggle()" style="background-color:white">
+    <i class="fa-solid fa-bars-progress" style="color: #8c8c8c;"></i>By Categories
+</div>
+
+<div id="sidebar" class="h-100 bg-light d-none d-md-block">
+    <ul class="list-unstyled">
+        <li class=" border-secondary p-2">
+            <a href=" {% url 'all_foods' %}" class="text-decoration-none">All Foods</a>
+        </li>
+        <li class="border-secondary p-2">
+            <a href="" class="text-decoration-none">Categories</a>
+        </li>
+        {% for category in categories %}
+            <ul class="list-unstyled ms-3">
+                <li class=" border-secondary p-2">
+                    <a href=" {% url 'food_category' category.id %}" class="text-decoration-none">-{{category.category}}</a>
+                </li>
+            </ul>
+        {% endfor %}
+        <li class="border-secondary p-2">
+            <a href="" class="text-decoration-none">Types</a>
+        </li>
+        {% for type in types %}
+            <ul class="list-unstyled ms-3">
+                <li class=" border-secondary p-2">
+                    <a href="{% url 'food_type' type.id %}" class="text-decoration-none">-{{type.type}}</a>
+                </li>
+            </ul>
+        {% endfor %}
+    </ul>
+</div>
+{% block extrajs %}
+<script>
+    function toggle()
+    {
+        document.getElementById("sidebar").classList.toggle("d-none")
+    }
+</script>
+{% endblock extrajs %}

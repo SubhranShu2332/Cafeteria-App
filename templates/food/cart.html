@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}| Cart{% endblock title %}
+
+{% block content %}
+<div class="container cart">
+  <h1 class="mx-5 mt-5 cartHeading">Cart</h1>
+    <div class="row mx-5">
+        <div class="col-md-8 p-2">
+            {% if foods %}
+            {% for food in foods %}
+            <div class="card mb-4 cartItems">
+                <div class="row g-0">
+                  <div class="col-md-3 card-image cartImage">
+                    <img src="{{food.image.url}}" class="img-fluid rounded-start rounded-end" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body cartDetails">
+                      <h4 class="card-title">{{food.name}}</h4>
+                      <h5 class="mb-0">Price:{{food.price}}</h5>
+                    </div>
+                    
+                  </div>
+                  <form action="{% url 'update_cart' %}" method="POST">
+                  {% csrf_token %}
+                    {% comment %} {% with fid = food.id %} {% endcomment %}
+                     
+                  <input type="hidden" name="foodid" value="{{food.id}}">
+                  <div class="card-down">
+                    <div class="count" onload="count()">
+                      {% comment %} {% set fid.value = food.id %} {% endcomment %}
+                      <button type="button" class="btn d-inline text-white" onclick="decrement(event)" id="{{food.id}}">-</button>
+                      <input class="inp btn text-white d-inline" type="text" name="quantity" id="quantity{{food.id}}" value="{{food.quantity}}" readonly required>
+                      <button type="button" id="{{food.id}}" class="d-inline btn text-white" onclick="increment(event)">+</button>
+                    </div>
+                    <input class="btn btn-outline-success update cartUpdate" type="submit" value="Update" id="c{{food.id}}" >
+                  
+                    <a href="{% url 'remove_from_cart' food.id %}" class="btn btn-sm btn-outline-warning my-2 ms-1 remove removeCart">Remove</a>
+                  </div>
+                </form>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% else %}
+            <h4>Cart is empty</h4>
+            {% endif %}            
+        </div>
+        <div class="col-md-4 p-2">
+           
+                {% if total_price %}
+                <div class="card">
+                    <div class="card-body">
+                    <h3>Price Details</h3>
+                    <hr>
+                    {% comment %} {% for food in foods %}
+                    <span class="part">
+                      {{food.name}} X {{food.quantity}} = {{food.name }}
+                    </span>
+                    {% endfor %} {% endcomment %}
+                    <h4>Total Price : Rs/-{{total_price}}</h4>
+                    <a class="btn btn-primary w-100" href=" {% url 'check_out' %}">Check Out</a>
+                    {% comment %} <a class="btn btn-primary w-100" href=" {% url 'check_out' %}">Check Out</a> {% endcomment %}
+                </div>
+                
+                {% endif%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extrajs%}
+<script>
+  function decrement(e){
+    tag=window.event.srcElement.id;
+    console.log(tag);
+    ele="quantity"+tag;
+    let quantity=document.getElementById(ele)
+  if (quantity.value>1){
+    quantity.value=Number(quantity.value)-1
+  }
+  }
+  function increment(e){
+  
+    tag=window.event.srcElement.id;
+    console.log(tag);
+    ele="quantity"+tag;
+    let quantity=document.getElementById(ele)
+    quantity.value=Number(quantity.value)+1
+  }
+</script>
+{% endblock extrajs%}

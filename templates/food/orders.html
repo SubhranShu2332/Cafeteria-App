@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}|| Order History{% endblock title %}
+{% block content %}
+<div class="container my-5">
+    <div class="row ">
+      
+        <div class="col-md-10 mx-auto ">
+          <h2 class="p-3">Past Orders</h2>
+            {% for order in orders %}
+                <div class="card-mb-2">
+                    <div class="card-body orders">
+                        <div class="row order">
+                            <div class="col-md-2">
+                                <img src="{{order.food.image.url}}" alt="" width="170px">
+                            </div>
+                            <div class="col-md-4 p-1">
+                                <p class="mb-1">Order #{{order.id}} | {{order.created_at}}</p>
+                                <h4>{{order.food.name}}
+                                </h4>
+                                <p class="mb-1"><b>Counter : </b>{{order.counter}}</p>
+                                <p class="mb-1"><b>Quantity : </b>{{order.quantity}}</p>
+                                
+                            </div>
+                            <div class="col-md-6 status">
+                                <span>Order is {{order.status}} On {{order.updated_at}}</span>
+                                        {% if order.status == "Delivered" %}
+                                         <i class="fa fa-circle-check" style="color: #00ff00;"></i>
+                                        {% elif order.status == "Placed" %}
+                                        <i class="fa-solid fa-check-to-slot"></i>
+                                        {% elif order.status == "Cooking" %}
+                                        <i class="fa-solid fa-fire-burner" style="color: #ff0000;"></i>
+                                        {% elif order.status == "Ready" %}
+                                        <i class="fa-solid fa-bowl-food" style="color: #ff8000;"></i>
+                                        {% else %}
+                                        <i class="fa-solid fa-ban" style="color: #ff0000;"></i>
+                                        {% endif %}
+                                </p>
+                            </div> 
+                        </div>
+                        {% if order.status == "Placed" %}
+                        <a href="" class="btn btn-sm btn-outline-danger rounded-0">Cancel Order</a>
+                        {% elif order.status == "Delivered" %}
+                                        <a href="" 
+                                        class="btn btn-sm btn-outline-success rounded-0" data-bs-toggle="modal"
+                                         data-bs-target="#feedbackModal" 
+                                         data-food-id="{{order.food.id}}" 
+                                         data-food-title="{{order.food.title}}"
+                                         onclick="setfoodDetails(event)">Feedback</a> 
+                        {% endif %}
+                        <a href="" class="btn btn-sm btn-outline-warning rounded-0">Help</a>
+                        <p class="mb-1 ms-auto"><b>Price :</b>{{order.price}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+ <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">feedback for <span class="text-primary" id="foodTitle"></span></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action=" {% url 'add_feedback' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="food_id" id="foodId">
+            <div class="rate">
+                <input type="radio" id="star5" name="rating" value="5" required>
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rating" value="4" required>
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rating" value="3" required>
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rating" value="2" required>
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rating" value="1" required>
+                <label for="star1" title="text">1 star</label>
+            </div>
+            <textarea name="comment" class="form-control rounded-0 my-3" rows="5" placeholder="Say Something"></textarea>
+            <input type="submit" class="btn btn-primary rounded-0" value="Submit">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div> 
+  
+{% endblock content %}
+
+{% block extrajs %}
+<script>
+    function setfoodDetails(e)
+    {
+        let foodId=e.target.dataset.foodId
+        let foodTitle=e.target.dataset.foodTitle
+        document.getElementById("foodTitle").innerHTML=foodTitle
+        document.getElementById("foodId").value=foodId
+    } 
+</script>
+{% endblock extrajs %}

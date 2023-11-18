@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}| All Foods{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-2 side">
+        {% include 'sidebar.html' %}
+    </div>
+    <div class="col-md-10 foodside">
+        <div class="container foods">
+            {% if name %}
+            <div id="alert" class="alert alert-success" type="alert">{{name}} X {{quantity}} Added To The Cart</div>
+            {% endif %}
+            {% if foods %}
+            
+            {% for food in foods %}
+            
+            <div class="row bg-light mt-3 wow animate__animated animate__fadeInUp" >
+                <div class="col-7 left">
+                    {% if food.type.type == "Veg" %}
+                    <div>
+                        <img class="logo" src="{% static 'image/veg.jpg' %}" alt="">
+                    </div>
+                    {% else %}
+                    <div>
+                        <img class="logo" src="{% static 'image/nonveg.webp' %}" alt="">
+                    </div>
+                    {% endif %}
+                    <h3 class='title py-1'>{{food.name}}</h3>
+                    <div class="rating">
+                        <p class="mb-1">
+                            {{food.rating}}
+                            <i class="fa-regular fa-star
+                            {% if food.rating <= 0.5 and food.rating > 0 %}
+                               fa-solid fa-star-half-stroke 
+                            {% elif food.rating >= 1%}
+                                fa-solid
+                            {% endif %}
+                            " style="color: #ffae00;"></i>
+
+                            <i class="fa-regular fa-star
+                            {% if food.rating <= 1.5 and food.rating > 1 %}
+                               fa-solid fa-star-half-stroke 
+                            {% elif food.rating >= 2 %}
+                                fa-solid
+                            {% endif %}" 
+                            style="color: #ffae00;"></i>
+
+                            <i class="fa-regular fa-star
+                            {% if food.rating <= 2.5 and food.rating > 2 %}
+                               fa-solid fa-star-half-stroke 
+                            {% elif food.rating >= 3%}
+                                fa-solid
+                            {% endif %}
+                            " style="color: #ffae00;"></i>
+
+                            <i class="fa-regular fa-star
+                            {% if food.rating <= 3.5 and food.rating > 3 %}
+                               fa-solid fa-star-half-stroke 
+                            {% elif food.rating >= 4%}
+                                fa-solid
+                            {% endif %}"
+                            style="color: #ffae00;"></i>
+
+                            <i class="fa-regular fa-star
+                            {% if food.rating <= 4.5 and food.rating > 4 %}
+                               fa-solid fa-star-half-stroke 
+                            {% elif food.rating >= 5%}
+                                fa-solid
+                            {% endif %}
+                            " style="color: #ffae00;"></i>
+                            ({{food.noRating}})
+                        </p>
+                    </div>
+                    <h4 class="price"><i class="fa-solid fa-indian-rupee-sign mb-2"></i>
+                        {{food.price}}
+                    </h4>
+                    <p class="desc">{{food.description}}</p>
+                </div>
+                <div class="col-5 right" >
+                    <img src="{{food.image.url}}" alt="" class="py-1" >
+                    <form action="{% url 'add_to_cart' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="foodname" value="{{food.name}}"> 
+                        <input type="hidden" name="foodid" value="{{food.id}}">
+                        <div class="count" onload="count()">
+                            <button type="button" class="btn d-inline text-white" onclick="decrement(event)" id="{{food.id}}">-</button>
+                            <input class="inp btn text-white d-inline" type="text" name="quantity" id="quantity{{food.id}}" value="{{cart.food.id}}" readonly required>
+                            <button type="button" id="{{food.id}}" class="d-inline btn text-white" onclick="increment(event)">+</button>
+                        </div>
+                        <span class="add d-none" id="add{{food.id}}">
+                            <input class="btn btn-outline-success" type="submit" value="Add+" id="c{{food.id}}" onclick="count(food)">
+                        </span>
+                 </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+                <div class="row">
+                    <div class="col-md-12">
+                        No Food is Available
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% comment %} Paginator {% endcomment %}
+
+        <div class="paginator">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  {% if foods.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="/foods/?page={{foods.previous_page_number}}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  {% endif %}
+    
+                  {% for n in page_list %}
+                  <li class="page-item"><a class="page-link" href="/foods/?page={{n}}">{{n}}</a></li>
+                  {% endfor %}
+                  {% if foods.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="/foods/?page={{foods.next_page_number}}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                  {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </nav>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
+{% block extrajs %}
+<script>
+    function decrement(e){
+            tag=window.event.srcElement.id;
+            console.log(tag);
+            ele="quantity"+tag;
+            let quantity=document.getElementById(ele)
+        if (quantity.value>0){
+            quantity.value=Number(quantity.value)-1
+        }
+            cla="add"+tag
+            var e = document.getElementById(cla);  
+            
+            if(quantity.value==0)
+            {
+                e.classList.add("d-none");
+            } 
+    }
+    function increment(e){
+        
+            tag=window.event.srcElement.id;
+            console.log(tag);
+            ele="quantity"+tag;
+            let quantity=document.getElementById(ele)
+            quantity.value=Number(quantity.value)+1
+            cla="add"+tag
+            var e = document.getElementById(cla);  
+            e.classList.remove("d-none");  
+
+    }
+    {% comment %} window.onload = function(){
+        var cart={{cart | safe}}
+        console.log("apple")
+        tag=window.event.srcElement.id;
+        console.log(tag);
+        ele="quantity"+tag;
+        let quantity=document.getElementById(ele)
+        var e = document.getElementById("add");
+        if (quantity > 0)
+        {  
+            e.classList.remove("d-none");
+        }  
+    } {% endcomment %}
+
+    function count(object)
+    {
+        var food={{food | safe}}
+        tag=window.event.srcElement.id;
+        console.log("yes");
+        console.log(tag.slice(1));
+    } 
+
+</script>
+{% endblock extrajs %}
+
+

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}| Check Out{% endblock title %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 p-2 order-md-2">
+            <h4 class="bg-primary text-white p-2">
+                Order Summary
+            </h4>
+            <table class="table">
+                {% for food in foods %}
+                <tr>
+                    <td>{{food.name}}  X  <h6 class="d-inline">{{food.quantity}}</h6></td>
+                    <td>{{food.price}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th>Total:</th>
+                    <th>{{total_price}}</th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-8 p-2">
+            <form action="{% url 'place_order' %}" method="POST">
+                {% csrf_token %}
+                  <h4 class="bg-primary text-white p-2">Select Payment Mode</h4>
+                      <label for="" class="d-block border p-2 mb-2">
+                        Pay Through
+                          <input type="submit" name="payment_mode"  class="btn btn-outline-success" value="ERP" id=""> 
+                      </label>
+                      <label for="" class="d-block border p-2 mb-2">
+                        Pay Through
+                        <input type="submit" name="payment_mode" class="btn btn-outline-success" value="Online" id="rzp-button1">
+                    </label>
+                    {% comment %} <button >Pay</button> {% endcomment %}
+                    {% comment %} <input type="submit" id="rzp-button1" value="Place Order" class="btn btn-primary rounded-0 mt-3"> {% endcomment %}
+            </form>
+        </div>
+    </div>
+</div>
+  
+{% endblock content %}
+
+{% block extrajs %}
+{% comment %} <button id="rzp-button1">Pay</button> {% endcomment %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "{{api_key}}", // Enter the Key ID generated from the Dashboard
+    
+    "name": "Cafeteria", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "callback_url": "{% url 'place_order' %}",
+    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+        "name": "{{user.name}}", //your customer's name
+        "email": "{{user.email}}",
+        "contact": "{{user.phone}}" //Provide the customer's phone number for better conversion rates 
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick  = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+
+</script>
+</script>
+{% endblock extrajs %}

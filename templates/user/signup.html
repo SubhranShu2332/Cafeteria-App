@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}|| Sign Up{% endblock title %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign Up</h3>
+                </div>
+                <div class="card-body">
+                    {% for message in messages %}
+                    <p class={{message.tags}}>{{message}}</p>
+                    {% endfor %}
+                    <form action=" {% url 'signup' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-1">
+                            <label for="">First Name</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="">SIC</label>
+                            <input type="text" name="sic" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Password</label>
+                            <input type="Password" name="password" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Confirm Password</label>
+                            <input type="Password" name="password " class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <input type="submit" value="Sign Up" name="password2" class="btn btn-primary w-100" required>
+                        </div>
+                    </form>
+                    <div class="card-text text-center">
+                        Already Have An Account <a href="{% url 'signin' %}">Sign In</a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}
+
+        {% endblock title %}
+    </title>
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200&family=Playfair+Display&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" integrity="sha512-Eak/29OTpb36LLo2r47IpVzPBLXnAMPAVypbSZiZ4Qkf8p/7S/XRG5xp7OKWPPYfJT6metI+IORkR5G8F900+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    
+</head>
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg pt-3 navi">
+        <div class="container-fluid">
+          <div class="offcan d-lg-none">
+            <a class="d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasResponsive" aria-controls="offcanvasResponsive">
+              <i class="fa-solid fa-bars"></i>
+            </a>
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasResponsive" aria-labelledby="offcanvasResponsiveLabel">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasResponsiveLabel">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasResponsive" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body d-lg-none">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center ">
+                  <form class="d-flex searchBar" role="search" action="{% url 'search' %}">
+                    <input class="form-control me-2 searchInput" type="search" name="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-secondary searchButton" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                  </form>
+                  <li class="nav-item">
+                    <a class="nav-link active" href=" {% url 'all_foods' %}"><i class="fa-solid fa-utensils"></i>Foods</a>
+                  </li>
+    
+                  {% comment %} Cart {% endcomment %}
+    
+                  <li class="nav-item">
+                    
+                  </li>
+    
+    
+                  {% if user.is_authenticated %}
+                  {% comment %} Menu {% endcomment %}
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Welcome, {{user.first_name}}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href=""><i class="fa-regular fa-user m-1"></i>Profile</a></li>
+                      <li><a class="dropdown-item" href=" {% url 'orders' %}"><i class="fa-solid fa-gift m-1"></i>Orders</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li class="nav-item">
+                        <a class="nav-link text-primary" href="{% url 'signout' %}">
+                          <i class="fa-solid fa-user m-2"></i>Log-Out</a>
+                      </li>
+                    </ul>
+                  </li>
+                  {% else %}
+    
+                  {% comment %} Sign In/Sign Out {% endcomment %}
+    
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'signin' %}">
+                      <i class="fa-solid fa-right-to-bracket"></i></i>Sign In</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'signup' %}">
+                      <i class="fa-solid fa-user"></i>Sign Up</a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <a class="navbar-brand titleLogo" href=" {% url 'index' %}" style="font-size:30px">Cafeteria</a>
+
+          {% comment %} Small Search {% endcomment %}
+          <span class="smallSearch d-block d-sm-none"><i class="fa-solid fa-magnifying-glass " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasResponsive" style="color:#757575" aria-controls="offcanvasResponsive"></i></span>
+
+          {% comment %} Small Cart {% endcomment %}
+          <a class="nav-link active d-block d-sm-none smallCart
+          " aria-current="page" href="{% url 'cart' %}"><i class="fa-solid fa-cart-shopping"></i>Cart</a>
+                    {% if no %}
+                    <div class="d-block d-sm-none cartCounter" href="" style="">{{no}}</div>
+                    {% endif %}
+
+          
+          <div class="upper d-none d-sm-block">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  
+              {% comment %} Search Bar {% endcomment %}
+  
+              
+              <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center ">
+                <form class="d-flex searchBar" role="search" action="{% url 'search' %}" method="POST">
+                  {% csrf_token %}
+                  <input class="form-control me-2 searchInput" type="search" name="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-secondary searchButton" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+                <li class="nav-item">
+                  <a class="nav-link active" href=" {% url 'all_foods' %}"><i class="fa-solid fa-utensils"></i>Foods</a>
+                </li>
+  
+                {% comment %} Cart {% endcomment %}
+  
+                <li class="nav-item">
+                  <a class="nav-link active 
+                  " aria-current="page" href="{% url 'cart' %}"><i class="fa-solid fa-cart-shopping"></i>Cart</a>
+                  {% if no %}
+                  <div class="cartCounter" href="" style="">{{no}}</div>
+                  {% endif %}
+                </li>
+  
+  
+                {% if user.is_authenticated %}
+                {% comment %} Menu {% endcomment %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Welcome, {{user.first_name}}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href=""><i class="fa-regular fa-user m-1"></i>Profile</a></li>
+                    <li><a class="dropdown-item" href=" {% url 'orders' %}"><i class="fa-solid fa-gift m-1"></i>Orders</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="nav-item">
+                      <a class="nav-link text-primary" href="{% url 'signout' %}">
+                        <i class="fa-solid fa-user m-2"></i>Log-Out</a>
+                    </li>
+                  </ul>
+                </li>
+                {% else %}
+  
+                {% comment %} Sign In/Sign Out {% endcomment %}
+  
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'signin' %}">
+                    <i class="fa-solid fa-right-to-bracket"></i></i>Sign In</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'signup' %}">
+                    <i class="fa-solid fa-user"></i>Sign Up</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    {% block content %}
+    
+    {% endblock content %}
+    
+    
+    <footer class="text-center">
+        &copy;Cafeteria 2023
+    </footer>
+    {% block extrajs %}
+    {% endblock extrajs %}
+    <script src="{% static 'bootstrap/bootstrap.bundle.min.js' %}">
+    </script>
+    <script>
+        new WOW().init();
+     </script>
+</body>
+</html>
