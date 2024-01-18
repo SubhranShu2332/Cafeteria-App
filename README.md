@@ -36,3 +36,9 @@ The Cafeteria Management System for Colleges is a Django-based web application d
    ```bash
    git clone https://github.com/your-username/cafeteria-management-system-django.git
    cd cafeteria-management-system-django
+2.Install dependencies:
+```bash
+   pip install -r requirements.txt
+3.Configure the database:
+Create a SQL database and update the DATABASES settings in settings.py.
+Apply migrations: python manage.py migrate
